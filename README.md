@@ -1,10 +1,15 @@
-# SolusVM PHP API Class wrapper
+# SolusVM API PHP Class wrapper
 A PHP wrapper class for the SolusVM API which interacts with virtual servers.
 
-```version 1.0```
+```version 1.1```
 
+### Requires
+
+* PHP 7.4 minimum
 
 ### Usage
+
+First edit lines 11,12,13 in ```class.php``` for your hosting providers solusVM URL along with your account API key and API hash
 
 Call the class file on any page that uses it
 
@@ -15,10 +20,10 @@ require_once('class.php');
 
 ---
 
-Use your hosting providers solusVM URL along with your account API key and API hash
+Create a new instance on page of use:
 
 ```php
-$call = new solusClientApi('https://hostsurl/api/client/command.php','API-KEY','API-HASH');
+$call = new solusClientApi();
 ```
 
 ---

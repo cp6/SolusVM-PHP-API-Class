@@ -1,6 +1,6 @@
 <?php
 require_once('class.php');
 
-$call = new solusClientApi('https://hostsurl/api/client/command.php','API-KEY','API-HASH');
+$call = new solusClientApi();
 
 echo json_encode($call->allInfo());

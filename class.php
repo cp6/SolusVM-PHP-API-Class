@@ -3,23 +3,27 @@
 /**
  * @about SolusVM client api wrapper
  * @author corbpie
- * @version 1.0
+ * @version 1.1
  */
- 
+
 class solusClientApi
 {
-    private string $base_url;//Base url eg "https://hostname/api/client/command.php"
-    private string $key;//Api key
-    private string $hash;//Api hash
+    private const BASE_URL = '';//Base url eg "https://hostname/api/client/command.php"
+    private const KEY = '';//Api key
+    private const HASH = '';//Api hash
 
-    public function __construct(string $base_url, string $key, string $hash)
+    private string $base_url;
+    private string $key;
+    private string $hash;
+
+    public function __construct()
     {
-        $this->base_url = $base_url;
-        $this->key = $key;
-        $this->hash = $hash;
+        $this->base_url = self::BASE_URL;
+        $this->key = self::KEY;
+        $this->hash = self::HASH;
     }
 
-    public function doCall(string $method, array $params)
+    protected function doCall(string $method, array $params)
     {
         $curl = curl_init();
         if ($method == 'POST') {
@@ -123,7 +127,7 @@ class solusClientApi
         return $match[1];
     }
 
-    public function totalMem(string $convert_to = 'MB', int $decimals = 2)
+    public function totalMem(string $convert_to = 'MB', int $decimals = 2): string
     {
         $value = explode(',', $this->memMain());
         if ($convert_to == 'MB') {
@@ -137,7 +141,7 @@ class solusClientApi
         }
     }
 
-    public function memAval(string $convert_to = 'MB', int $decimals = 2)
+    public function memAval(string $convert_to = 'MB', int $decimals = 2): string
     {
         $value = explode(',', $this->memMain());
         if ($convert_to == 'MB') {
@@ -151,13 +155,13 @@ class solusClientApi
         }
     }
 
-    public function memUsedPercent(int $decimals = 2)
+    public function memUsedPercent(int $decimals = 2): float
     {
         $value = explode(',', $this->memMain());
         return number_format($value[2], $decimals);
     }
 
-    public function memFreePercent(int $decimals = 2)
+    public function memFreePercent(int $decimals = 2): float
     {
         $value = explode(',', $this->memMain());
         return number_format($value[3], $decimals);
@@ -169,7 +173,7 @@ class solusClientApi
         return $match[1];
     }
 
-    public function totalHdd(string $convert_to = 'MB', int $decimals = 2)
+    public function totalHdd(string $convert_to = 'MB', int $decimals = 2): float
     {
         $value = explode(',', $this->hddMain());
         if ($convert_to == 'MB') {
@@ -183,7 +187,7 @@ class solusClientApi
         }
     }
 
-    public function HddAval(string $convert_to = 'MB', int $decimals = 2)
+    public function HddAval(string $convert_to = 'MB', int $decimals = 2): float
     {
         $value = explode(',', $this->hddMain());
         if ($convert_to == 'MB') {
@@ -197,13 +201,13 @@ class solusClientApi
         }
     }
 
-    public function hddUsedPercent(int $decimals = 2)
+    public function hddUsedPercent(int $decimals = 2): float
     {
         $value = explode(',', $this->hddMain());
         return number_format($value[2], $decimals);
     }
 
-    public function hddFreePercent(int $decimals = 2)
+    public function hddFreePercent(int $decimals = 2): float
     {
         $value = explode(',', $this->hddMain());
         return number_format($value[3], $decimals);
@@ -229,7 +233,7 @@ class solusClientApi
         }
     }
 
-    public function BwAval(string $convert_to = 'MB', int $decimals = 2)
+    public function BwAval(string $convert_to = 'MB', int $decimals = 2): float
     {
         $value = explode(',', $this->bwMain());
         if ($convert_to == 'MB') {
@@ -243,13 +247,13 @@ class solusClientApi
         }
     }
 
-    public function BwUsedPercent(int $decimals = 2)
+    public function BwUsedPercent(int $decimals = 2): float
     {
         $value = explode(',', $this->bwMain());
         return number_format($value[2], $decimals);
     }
 
-    public function BwFreePercent(int $decimals = 2)
+    public function BwFreePercent(int $decimals = 2): float
     {
         $value = explode(',', $this->bwMain());
         return number_format($value[3], $decimals);
