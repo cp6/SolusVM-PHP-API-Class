@@ -1,11 +1,11 @@
 # SolusVM API PHP Class wrapper
 A PHP wrapper class for the SolusVM API which interacts with virtual servers.
 
-```version 1.1```
+```version 1.2```
 
 ### Requires
 
-* PHP 7.4 minimum
+* PHP >= 7.4 
 
 ### Usage
 

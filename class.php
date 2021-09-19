@@ -3,7 +3,7 @@
 /**
  * @about SolusVM client api wrapper
  * @author corbpie
- * @version 1.1
+ * @version 1.2
  */
 
 class solusClientApi
@@ -26,12 +26,12 @@ class solusClientApi
     protected function doCall(string $method, array $params)
     {
         $curl = curl_init();
-        if ($method == 'POST') {
+        if ($method === 'POST') {
             curl_setopt($curl, CURLOPT_POST, 1);
             if ($params) {
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
             }
-        } elseif ($method == 'GET') {
+        } elseif ($method === 'GET') {
             if ($params) {
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
             }
@@ -43,7 +43,7 @@ class solusClientApi
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Expect:'));
         $result = curl_exec($curl);
         preg_match('~<status>([^{]*)</status>~i', $result, $er_match);
-        if (isset($er_match[1]) && $er_match[1] == 'error') {
+        if (isset($er_match[1]) && $er_match[1] === 'error') {
             throw new Exception("Error with API call. Check key, hash and url are correct");
         }
         curl_close($curl);
@@ -53,11 +53,7 @@ class solusClientApi
     public function getStatus(): bool
     {
         preg_match('~<vmstat>([^{]*)</vmstat>~i', $this->doCall('GET', array('key' => $this->key, 'hash' => $this->hash, 'action' => 'info', 'status' => 'true')), $match);
-        if ($match[1] == 'online') {
-            return true;
-        } else {
-            return false;
-        }
+        return $match[1] === 'online';
     }
 
     public function ipCount(): int
@@ -130,11 +126,11 @@ class solusClientApi
     public function totalMem(string $convert_to = 'MB', int $decimals = 2): string
     {
         $value = explode(',', $this->memMain());
-        if ($convert_to == 'MB') {
+        if ($convert_to === 'MB') {
             return number_format($value[0] / 1048576, $decimals);
-        } elseif ($convert_to == 'KB') {
+        } elseif ($convert_to === 'KB') {
             return number_format($value[0] / 1024, $decimals);
-        } elseif ($convert_to == 'GB') {
+        } elseif ($convert_to === 'GB') {
             return number_format($value[0] / 1073741824, $decimals);
         } else {
             return $value[0];
@@ -144,11 +140,11 @@ class solusClientApi
     public function memAval(string $convert_to = 'MB', int $decimals = 2): string
     {
         $value = explode(',', $this->memMain());
-        if ($convert_to == 'MB') {
+        if ($convert_to === 'MB') {
             return number_format($value[1] / 1048576, $decimals);
-        } elseif ($convert_to == 'KB') {
+        } elseif ($convert_to === 'KB') {
             return number_format($value[1] / 1024, $decimals);
-        } elseif ($convert_to == 'GB') {
+        } elseif ($convert_to === 'GB') {
             return number_format($value[1] / 1073741824, $decimals);
         } else {
             return $value[0];
@@ -176,11 +172,11 @@ class solusClientApi
     public function totalHdd(string $convert_to = 'MB', int $decimals = 2): float
     {
         $value = explode(',', $this->hddMain());
-        if ($convert_to == 'MB') {
+        if ($convert_to === 'MB') {
             return number_format($value[0] / 1048576, $decimals);
-        } elseif ($convert_to == 'KB') {
+        } elseif ($convert_to === 'KB') {
             return number_format($value[0] / 1024, $decimals);
-        } elseif ($convert_to == 'GB') {
+        } elseif ($convert_to === 'GB') {
             return number_format($value[0] / 1073741824, $decimals);
         } else {
             return $value[0];
@@ -190,11 +186,11 @@ class solusClientApi
     public function HddAval(string $convert_to = 'MB', int $decimals = 2): float
     {
         $value = explode(',', $this->hddMain());
-        if ($convert_to == 'MB') {
+        if ($convert_to === 'MB') {
             return number_format($value[1] / 1048576, $decimals);
-        } elseif ($convert_to == 'KB') {
+        } elseif ($convert_to === 'KB') {
             return number_format($value[1] / 1024, $decimals);
-        } elseif ($convert_to == 'GB') {
+        } elseif ($convert_to === 'GB') {
             return number_format($value[1] / 1073741824, $decimals);
         } else {
             return $value[0];
@@ -222,11 +218,11 @@ class solusClientApi
     public function totalBw(string $convert_to = 'MB', int $decimals = 2)
     {
         $value = explode(',', $this->bwMain());
-        if ($convert_to == 'MB') {
+        if ($convert_to === 'MB') {
             return number_format($value[0] / 1048576, $decimals);
-        } elseif ($convert_to == 'KB') {
+        } elseif ($convert_to === 'KB') {
             return number_format($value[0] / 1024, $decimals);
-        } elseif ($convert_to == 'GB') {
+        } elseif ($convert_to === 'GB') {
             return number_format($value[0] / 1073741824, $decimals);
         } else {
             return $value[0];
@@ -236,11 +232,11 @@ class solusClientApi
     public function BwAval(string $convert_to = 'MB', int $decimals = 2): float
     {
         $value = explode(',', $this->bwMain());
-        if ($convert_to == 'MB') {
+        if ($convert_to === 'MB') {
             return number_format($value[1] / 1048576, $decimals);
-        } elseif ($convert_to == 'KB') {
+        } elseif ($convert_to === 'KB') {
             return number_format($value[1] / 1024, $decimals);
-        } elseif ($convert_to == 'GB') {
+        } elseif ($convert_to === 'GB') {
             return number_format($value[1] / 1073741824, $decimals);
         } else {
             return $value[0];
@@ -288,15 +284,15 @@ class solusClientApi
             'ip_list' => $ips,
             'mem_total' => number_format($mem_main[0] / 1048576, 1),
             'mem_used' => number_format(($mem_main[0] - $mem_main[1]) / 1048576, 1),
-            'mem_used_percent' => intval(number_format($mem_main[2] / 1048576, 0)),
+            'mem_used_percent' => (int)number_format($mem_main[2] / 1048576, 0),
             'mem_data_type' => 'MB',
             'bw_total' => number_format($bw_main[0] / 1073741824, 1),
             'bw_used' => number_format($bw_main[1] / 1048576, 1),
-            'bw_used_percent' => intval(number_format($bw_main[3] / 1073741824, 0)),
+            'bw_used_percent' => (int)number_format($bw_main[3] / 1073741824, 0),
             'bw_data_type' => 'GB',
             'hdd_total' => number_format($hdd_main[0] / 1073741824, 1),
             'hdd_used' => number_format(($hdd_main[0] - $hdd_main[1]) / 1048576, 1),
-            'hdd_used_percent' => intval(number_format($hdd_main[3] / 1073741824, 0)),
+            'hdd_used_percent' => (int)number_format($hdd_main[3] / 1073741824, 0),
             'hdd_data_type' => 'GB',
             'datetime' => date('Y-m-d H:i:s')
         );
