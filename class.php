@@ -12,35 +12,20 @@ class solusClientApi
     private const KEY = '';//Api key
     private const HASH = '';//Api hash
 
-    private string $base_url;
-    private string $key;
-    private string $hash;
-
-    public function __construct()
-    {
-        $this->base_url = self::BASE_URL;
-        $this->key = self::KEY;
-        $this->hash = self::HASH;
-    }
-
-    protected function doCall(string $method, array $params)
+    protected function doCall(string $method, array $params): bool|string
     {
         $curl = curl_init();
         if ($method === 'POST') {
             curl_setopt($curl, CURLOPT_POST, 1);
-            if ($params) {
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
-            }
-        } elseif ($method === 'GET') {
-            if ($params) {
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
-            }
         }
-        curl_setopt($curl, CURLOPT_URL, $this->base_url);
+        if ($params) {
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $params);
+        }
+        curl_setopt($curl, CURLOPT_URL, self::BASE_URL);
         curl_setopt($curl, CURLOPT_FRESH_CONNECT, 1);
         curl_setopt($curl, CURLOPT_HEADER, 0);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Expect:'));
+        curl_setopt($curl, CURLOPT_HTTPHEADER, ['Expect:']);
         $result = curl_exec($curl);
         preg_match('~<status>([^{]*)</status>~i', $result, $er_match);
         if (isset($er_match[1]) && $er_match[1] === 'error') {
@@ -52,74 +37,74 @@ class solusClientApi
 
     public function getStatus(): bool
     {
-        preg_match('~<vmstat>([^{]*)</vmstat>~i', $this->doCall('GET', array('key' => $this->key, 'hash' => $this->hash, 'action' => 'info', 'status' => 'true')), $match);
+        preg_match('~<vmstat>([^{]*)</vmstat>~i', $this->doCall('GET', array('key' => self::KEY, 'hash' => self::HASH, 'action' => 'info', 'status' => 'true')), $match);
         return $match[1] === 'online';
     }
 
     public function ipCount(): int
     {
-        preg_match('~<ipaddr>([^{]*)</ipaddr>~i', $this->doCall('GET', array('key' => $this->key, 'hash' => $this->hash, 'action' => 'info', 'ipaddr' => 'true')), $match);
+        preg_match('~<ipaddr>([^{]*)</ipaddr>~i', $this->doCall('GET', array('key' => self::KEY, 'hash' => self::HASH, 'action' => 'info', 'ipaddr' => 'true')), $match);
         return count(explode(',', $match[1]));
     }
 
     public function ipMain(): string
     {
-        preg_match('~<ipaddress>([^{]*)</ipaddress>~i', $this->doCall('GET', array('key' => $this->key, 'hash' => $this->hash, 'action' => 'info')), $match);
+        preg_match('~<ipaddress>([^{]*)</ipaddress>~i', $this->doCall('GET', array('key' => self::KEY, 'hash' => self::HASH, 'action' => 'info')), $match);
         return $match[1];
     }
 
     public function ip(int $number = 1): string
     {
-        preg_match('~<ipaddr>([^{]*)</ipaddr>~i', $this->doCall('GET', array('key' => $this->key, 'hash' => $this->hash, 'action' => 'info', 'ipaddr' => 'true')), $match);
+        preg_match('~<ipaddr>([^{]*)</ipaddr>~i', $this->doCall('GET', array('key' => self::KEY, 'hash' => self::HASH, 'action' => 'info', 'ipaddr' => 'true')), $match);
         $ip_arr = explode(',', $match[1]);
         return $ip_arr[($number - 1)];
     }
 
     public function type(): string
     {
-        preg_match('~<type>([^{]*)</type>~i', $this->doCall('GET', array('key' => $this->key, 'hash' => $this->hash, 'action' => 'info')), $match);
+        preg_match('~<type>([^{]*)</type>~i', $this->doCall('GET', array('key' => self::KEY, 'hash' => self::HASH, 'action' => 'info')), $match);
         return $match[1];
     }
 
     public function hostname(): string
     {
-        preg_match('~<hostname>([^{]*)</hostname>~i', $this->doCall('GET', array('key' => $this->key, 'hash' => $this->hash, 'action' => 'info')), $match);
+        preg_match('~<hostname>([^{]*)</hostname>~i', $this->doCall('GET', array('key' => self::KEY, 'hash' => self::HASH, 'action' => 'info')), $match);
         return $match[1];
     }
 
     public function node(): string
     {
-        preg_match('~<node>([^{]*)</node>~i', $this->doCall('GET', array('key' => $this->key, 'hash' => $this->hash, 'action' => 'info')), $match);
+        preg_match('~<node>([^{]*)</node>~i', $this->doCall('GET', array('key' => self::KEY, 'hash' => self::HASH, 'action' => 'info')), $match);
         return $match[1];
     }
 
     public function location(): string
     {
-        preg_match('~<location>([^{]*)</location>~i', $this->doCall('GET', array('key' => $this->key, 'hash' => $this->hash, 'action' => 'info', 'location' => 'true')), $match);
+        preg_match('~<location>([^{]*)</location>~i', $this->doCall('GET', array('key' => self::KEY, 'hash' => self::HASH, 'action' => 'info', 'location' => 'true')), $match);
         return $match[1];
     }
 
     public function reboot(): string
     {
-        preg_match('~<status>([^{]*)</status>~i', $this->doCall('POST', array('key' => $this->key, 'hash' => $this->hash, 'action' => 'reboot')), $match);
+        preg_match('~<status>([^{]*)</status>~i', $this->doCall('POST', array('key' => self::KEY, 'hash' => self::HASH, 'action' => 'reboot')), $match);
         return $match[1];
     }
 
     public function boot(): string
     {
-        preg_match('~<status>([^{]*)</status>~i', $this->doCall('POST', array('key' => $this->key, 'hash' => $this->hash, 'action' => 'boot')), $match);
+        preg_match('~<status>([^{]*)</status>~i', $this->doCall('POST', array('key' => self::KEY, 'hash' => self::HASH, 'action' => 'boot')), $match);
         return $match[1];
     }
 
     public function shutdown(): string
     {
-        preg_match('~<status>([^{]*)</status>~i', $this->doCall('POST', array('key' => $this->key, 'hash' => $this->hash, 'action' => 'shutdown')), $match);
+        preg_match('~<status>([^{]*)</status>~i', $this->doCall('POST', array('key' => self::KEY, 'hash' => self::HASH, 'action' => 'shutdown')), $match);
         return $match[1];
     }
 
     public function memMain(): string
     {
-        preg_match('~<mem>([^{]*)</mem>~i', $this->doCall('GET', array('key' => $this->key, 'hash' => $this->hash, 'action' => 'info', 'mem' => 'true')), $match);
+        preg_match('~<mem>([^{]*)</mem>~i', $this->doCall('GET', array('key' => self::KEY, 'hash' => self::HASH, 'action' => 'info', 'mem' => 'true')), $match);
         return $match[1];
     }
 
@@ -165,7 +150,7 @@ class solusClientApi
 
     public function hddMain(): string
     {
-        preg_match('~<hdd>([^{]*)</hdd>~i', $this->doCall('GET', array('key' => $this->key, 'hash' => $this->hash, 'action' => 'info', 'hdd' => 'true')), $match);
+        preg_match('~<hdd>([^{]*)</hdd>~i', $this->doCall('GET', array('key' => self::KEY, 'hash' => self::HASH, 'action' => 'info', 'hdd' => 'true')), $match);
         return $match[1];
     }
 
@@ -211,7 +196,7 @@ class solusClientApi
 
     public function bwMain(): string
     {
-        preg_match('~<bw>([^{]*)</bw>~i', $this->doCall('GET', array('key' => $this->key, 'hash' => $this->hash, 'action' => 'info', 'hdd' => 'true')), $match);
+        preg_match('~<bw>([^{]*)</bw>~i', $this->doCall('GET', array('key' => self::KEY, 'hash' => self::HASH, 'action' => 'info', 'hdd' => 'true')), $match);
         return $match[1];
     }
 
@@ -257,7 +242,7 @@ class solusClientApi
 
     public function allInfo(): array
     {
-        $data = $this->doCall('GET', array('key' => $this->key, 'hash' => $this->hash, 'action' => 'info', 'bw' => 'true', 'hdd' => 'true', 'mem' => 'true', 'ipaddr' => 'true', 'location' => 'true', 'status' => 'true'));
+        $data = $this->doCall('GET', array('key' => self::KEY, 'hash' => self::HASH, 'action' => 'info', 'bw' => 'true', 'hdd' => 'true', 'mem' => 'true', 'ipaddr' => 'true', 'location' => 'true', 'status' => 'true'));
         preg_match('~<vmstat>([^{]*)</vmstat>~i', $data, $status);
         preg_match('~<hostname>([^{]*)</hostname>~i', $data, $hostname);
         preg_match('~<location>([^{]*)</location>~i', $data, $location);
@@ -300,6 +285,7 @@ class solusClientApi
 
     public function rdns(string $ip, string $rdns): string
     {
-        return $this->doCall('POST', array('key' => $this->key, 'hash' => $this->hash, 'action' => 'rdns', 'ip' => $ip, 'rdns' => $rdns));
+        return $this->doCall('POST', array('key' => self::KEY, 'hash' => self::HASH, 'action' => 'rdns', 'ip' => $ip, 'rdns' => $rdns));
     }
+
 }
